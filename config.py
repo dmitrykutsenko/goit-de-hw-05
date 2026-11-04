@@ -1,0 +1,7 @@
+KAFKA_BOOTSTRAP_SERVERS = "localhost:9092"
+
+TOPIC_SUFFIX = "bulga"
+
+BUILDING_SENSORS_TOPIC = f"building_sensors_{TOPIC_SUFFIX}"
+TEMPERATURE_ALERTS_TOPIC = f"temperature_alerts_{TOPIC_SUFFIX}"
+HUMIDITY_ALERTS_TOPIC = f"humidity_alerts_{TOPIC_SUFFIX}"
