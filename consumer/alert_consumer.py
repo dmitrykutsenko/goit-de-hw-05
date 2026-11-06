@@ -14,17 +14,18 @@ consumer = KafkaConsumer(
     bootstrap_servers=KAFKA_BROKER,
     auto_offset_reset="earliest",
     value_deserializer=lambda m:
-        json.loads(m.decode("utf-8"))
+        json.loads(m.decode("utf-8")),
+    group_id="alert_consumer_group_v2"
 )
 
 print("Alert consumer started")
+print(f"Listening topics: {TEMP_TOPIC}, {HUMIDITY_TOPIC}")
 
 for message in consumer:
 
     alert = message.value
 
-    print(
-        f"[{message.topic}] "
-        f"{alert}"
-    )
-    
+    print("\n==============================")
+    print(f"TOPIC: {message.topic}")
+    print(alert)
+    print("==============================")

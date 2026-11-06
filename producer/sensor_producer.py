@@ -5,6 +5,7 @@ from datetime import datetime
 
 from kafka import KafkaProducer
 
+
 from config import (
     KAFKA_BROKER,
     BUILDING_TOPIC
@@ -18,6 +19,7 @@ producer = KafkaProducer(
 sensor_id = random.randint(1000, 9999)
 
 print(f"Sensor started: {sensor_id}")
+print(f"Sending data to: {BUILDING_TOPIC}")
 
 while True:
 
@@ -39,7 +41,8 @@ while True:
         value=data
     )
 
+    producer.flush()
+
     print(data)
 
     time.sleep(5)
-    

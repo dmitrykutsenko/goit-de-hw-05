@@ -16,7 +16,7 @@ consumer = KafkaConsumer(
     value_deserializer=lambda m:
         json.loads(m.decode("utf-8")),
     auto_offset_reset="earliest",
-    group_id="alert_processor_group"
+    group_id="alert_processor_group_v2"
 )
 
 producer = KafkaProducer(
@@ -26,10 +26,13 @@ producer = KafkaProducer(
 )
 
 print("Processor started")
+print(f"Listening topic: {BUILDING_TOPIC}")
 
 for msg in consumer:
 
     data = msg.value
+
+    print(f"\nRECEIVED: {data}")
 
     sensor_id = data["sensor_id"]
     temperature = data["temperature"]
@@ -43,15 +46,20 @@ for msg in consumer:
             "timestamp": timestamp,
             "temperature": temperature,
             "message": (
-                f"Temperature exceeded: "
-                f"{temperature} C"
+                f"Temperature exceeded: {temperature} C"
             )
         }
+
+        print(f"TEMP ALERT GENERATED: {alert}")
 
         producer.send(
             TEMP_TOPIC,
             value=alert
         )
+
+        producer.flush()
+
+        print(f"SENT TO TOPIC: {TEMP_TOPIC}")
 
     if humidity > 80 or humidity < 20:
 
@@ -60,13 +68,17 @@ for msg in consumer:
             "timestamp": timestamp,
             "humidity": humidity,
             "message": (
-                f"Humidity out of range: "
-                f"{humidity}%"
+                f"Humidity out of range: {humidity}%"
             )
         }
+
+        print(f"HUMIDITY ALERT GENERATED: {alert}")
 
         producer.send(
             HUMIDITY_TOPIC,
             value=alert
         )
-        
+
+        producer.flush()
+
+        print(f"SENT TO TOPIC: {HUMIDITY_TOPIC}")
